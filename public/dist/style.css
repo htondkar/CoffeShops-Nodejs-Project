@@ -791,7 +791,7 @@ label {
             clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%); }
 
 .tags {
-  margin: 0;
+  margin-top: 20px;
   padding: 0;
   list-style: none;
   display: -ms-flexbox;
