@@ -11,6 +11,8 @@ body {
     background: linear-gradient(90deg, #48ded4 0%, #a026bf 20%, #e82c75 60%, #FFC40E 85%, #48ded4 95%);
     height: 10px;
     width: 100%; }
+  body .content {
+    padding-bottom: 50px; }
 
 .inner {
   max-width: 900px;
@@ -730,7 +732,8 @@ label {
     padding: 2rem; }
     .store__details p {
       line-height: 1.2;
-      margin-bottom: 0; }
+      margin-bottom: 0;
+      word-break: break-all; }
   @media all and (max-width: 850px) {
     .store {
       width: 48%; } }
@@ -754,31 +757,33 @@ label {
   -ms-flex-pack: distribute;
       justify-content: space-around; }
 
+.action-button {
+  width: 100%;
+  height: 20px; }
+
 .store__action {
-  font-size: 10px; }
+  font-size: 10px;
+  height: 60px;
+  position: absolute;
+  z-index: 2; }
   .store__action svg {
-    width: 25px;
-    fill: white; }
-  .store__action--edit a {
-    border-bottom: 0; }
+    width: 35px;
+    fill: black;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    padding: 5px; }
+  .store__action--edit {
+    text-align: center;
+    padding: 10px 0; }
+    .store__action--edit a {
+      border-bottom: 0;
+      color: white; }
 
 .store__hero {
   position: relative;
   padding: 0 10px 0 10px;
-  text-align: right; }
-  .store__hero:before {
-    display: block;
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    right: 0;
-    background: linear-gradient(45deg, #05b3d6 0%, rgba(5, 179, 214, 0) 70%), linear-gradient(135deg, #0958ec 10%, rgba(9, 88, 236, 0) 80%), linear-gradient(225deg, #d209ec 10%, rgba(210, 9, 236, 0) 80%), linear-gradient(315deg, #05e129 100%, rgba(5, 225, 41, 0) 70%);
-    opacity: 0.6;
-    z-index: 1;
-    -webkit-clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
-            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%); }
+  text-align: right;
+  min-height: 100px; }
   .store__hero img {
     height: 100%;
     width: 100%;
@@ -786,9 +791,14 @@ label {
     right: 0;
     position: absolute;
     left: 0;
+    z-index: 0;
     object-fit: cover;
     -webkit-clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
             clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%); }
+  .store__hero .title {
+    position: absolute;
+    bottom: 0;
+    right: 5px; }
 
 .tags {
   margin-top: 20px;

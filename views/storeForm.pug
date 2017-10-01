@@ -1,13 +1,28 @@
 mixin storeForm(store = {})
-  form(action="", method="post", class="card")
+  form(action=`/add/${store.id || ''}`, method="post", class="card", enctype="multipart/form-data")
     label(for="name") Store Name
-    input(type="text", name="name")
+    input(type="text", name="name", value=store.name || '')
     label(for="description") Store Description
-    textarea(name="description")
+    textarea(name="description")= value=store.description || ''
+    label(for="photo") Photo
+      input(type="file", name="photo", id="photo" accept="image/*")
+      if store.photo 
+        img(src=`/uploads/${store.photo}`, alt=store.name, width=200)
+    label(for="address") Address
+    input(type="text", id='address' name="location[address]" value=(store.location && store.location.address))
+    label(for="lng") Address Longitude
+    input(type="text", id="lng", name="location[coordinates][0]",
+     value=(store.location && store.location.coordinates[0]))
+    label(for="lat") Address Latitude 
+    input(type="text", id="lat", name="location[coordinates][1]"
+     value=(store.location && store.location.coordinates[1]))
+
+
     - const tags = ['good', 'bad', 'ugly']
+    - const storeTags = store.tags || []
     ul.tags
       each tag in tags
         .tag.tag__choice 
-          input(type="checkbox" id=tag value=tag name="tags")
+          input(type="checkbox" id=tag value=tag name="tags" checked=storeTags.includes(tag))
           label(for=tag) #{tag}
     input(type="submit", value="Save", class="button")      

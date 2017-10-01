@@ -1,14 +1,21 @@
 const express = require('express')
 const router = express.Router()
 const {
-  homePage,
+  getStores,
   addStore,
-  createStore
+  createStore,
+  editStore,
+  updateStore,
+  upload,
+  resize
 } = require('../controllers/storeController')
 const { catchErrors } = require('../handlers/errorHandlers')
 
-router.get('/', homePage)
+router.get('/', catchErrors(getStores))
+router.get('/stores', catchErrors(getStores))
 router.get('/add', addStore)
-router.post('/add', catchErrors(createStore))
+router.post('/add',upload, catchErrors(resize), catchErrors(createStore))
+router.post('/add/:storeId', catchErrors(updateStore))
+router.get('/stores/:storeId/edit', catchErrors(editStore))
 
 module.exports = router

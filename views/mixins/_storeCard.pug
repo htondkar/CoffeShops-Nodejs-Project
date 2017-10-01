@@ -1,0 +1,12 @@
+mixin storeCard(store = {})
+  .store 
+    .store__hero
+      .store__action
+        .store__action.store__action--edit
+          a(href=`/stores/${store._id}/edit`)
+            != helpers.icon('pencil')
+      img(src=`/uploads/${store.photo || 'store.png'}`, alt="store")
+      h2.title
+        a(href=`stores/${store.slug}`) #{store.name}
+    .store__details
+      p= store.description.split(' ').slice(0, 25).join('')
