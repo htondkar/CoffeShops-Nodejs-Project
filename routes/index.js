@@ -8,8 +8,10 @@ const {
   updateStore,
   upload,
   resize,
-  getStoreBySlug
+  getStoreBySlug,
+  getStoresByTag
 } = require('../controllers/storeController')
+const { loginForm } = require('../controllers/userController')
 const { catchErrors } = require('../handlers/errorHandlers')
 
 router.get('/', catchErrors(getStores))
@@ -28,7 +30,11 @@ router.post(
 )
 
 router.get('/stores/:storeId/edit', catchErrors(editStore))
-
 router.get('/stores/:slug', catchErrors(getStoreBySlug))
+
+router.get('/tags', catchErrors(getStoresByTag))
+router.get('/tags/:tag', catchErrors(getStoresByTag))
+
+router.get('/login', loginForm)
 
 module.exports = router
