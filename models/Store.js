@@ -30,13 +30,20 @@ const storeSchema = new mongoose.Schema({
   photo: String
 })
 
-storeSchema.pre('save', function(next) {
-  // add slug to store
+storeSchema.pre('save', async function(next) {
+  // add slug to store only if the name is new
   if (this.isModified('name')) {
     this.slug = slug(this.name)
+    // check if we've had this slug before
+    const slugRegEx = new RegExp(`^(${this.slug})((-[0-9]*$)?)$`, 'i')
+    // because when this function runs we dont have a Store yet
+    // we call the constructor of it
+    const stores = await this.constructor.find({ slug: slugRegEx })
+    if (stores.length > 0) {
+      this.slug = `${this.slug}-${stores.length + 1}`
+    }
     next()
   } else {
-    // just skip
     next()
     return
   }
