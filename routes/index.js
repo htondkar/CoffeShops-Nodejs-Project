@@ -11,7 +11,12 @@ const {
   getStoreBySlug,
   getStoresByTag
 } = require('../controllers/storeController')
-const { loginForm, createUser } = require('../controllers/userController')
+const {
+  loginForm,
+  createUser,
+  registerForm,
+  validateRegister
+} = require('../controllers/userController')
 const { catchErrors } = require('../handlers/errorHandlers')
 
 router.get('/', catchErrors(getStores))
@@ -36,6 +41,14 @@ router.get('/tags', catchErrors(getStoresByTag))
 router.get('/tags/:tag', catchErrors(getStoresByTag))
 
 router.get('/login', loginForm)
-router.post('/login', createUser)
+// router.post('/login', createUser)
+
+router.get('/register', registerForm)
+
+// 1) validate form
+// 2) create the account
+// 3) log the user in
+router.post('/register', validateRegister)
 
 module.exports = router
+ 
