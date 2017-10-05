@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const promisify = require('es6-promisify')
+const User = mongoose.model('User')
 
 exports.loginForm = function(req, res) {
   res.render('login', { title: 'Login' })
@@ -6,6 +8,15 @@ exports.loginForm = function(req, res) {
 
 exports.registerForm = function(req, res) {
   res.render('register', { title: 'Register' })
+}
+
+exports.register = async (req, res, next) => {
+  const user = await new User({ email: req.body.email, name: req.body.name })
+  // promisify the register provided by passport-local-mongoose
+  const promisedRegister = promisify(User.register, User) // second argument is context
+  // use the promisified method provided by passport-local-mongoose
+  await promisedRegister(user, req.body.password)
+  next()
 }
 
 exports.validateRegister = (req, res, next) => {
@@ -24,9 +35,13 @@ exports.validateRegister = (req, res, next) => {
   req
     .checkBody('password_confirm', 'Confirm password can not be blank')
     .notEmpty()
-  req.checkBody('password_confirm', 'passwords should match').equals('password')
+  req
+    .checkBody('password_confirm', 'Passwords should match')
+    .equals(req.body.password)
+
   const errors = req.validationErrors()
-  if (true) {
+
+  if (errors) {
     req.flash('error', errors.map(err => err.msg))
     res.render('register', {
       title: 'register',

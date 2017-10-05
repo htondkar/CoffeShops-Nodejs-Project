@@ -16,8 +16,14 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, required: 'Please enter your name', trim: true }
 })
 
-UserSchema.plugin(passportLocalMongoose, { usernameField: 'email' })
+UserSchema.virtual('gravatar').get(function() {
+  const hash = md5(this.email)
+  return `https://gravatar.com/avatar/${hash}?s=200`
+})
 
+// exposes a .register method in a model level
+UserSchema.plugin(passportLocalMongoose, { usernameField: 'email' })
+// show pretty errors
 UserSchema.plugin(mongoDbErrorHandler)
 
 module.exports = mongoose.model('User', UserSchema)
