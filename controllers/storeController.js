@@ -4,6 +4,7 @@ const jimp = require('jimp')
 const uuid = require('uuid')
 
 const Store = mongoose.model('Store')
+
 const multerOptions = {
   storage: multer.memoryStorage(),
   fileFilter(req, file, next) {
@@ -25,13 +26,21 @@ exports.addStore = (req, res) => {
 }
 
 exports.createStore = async (req, res) => {
+  req.body.author = req.user._id // provided by passport
   await new Store(req.body).save()
   req.flash('success', 'Successfully added the store')
   res.redirect('/')
 }
 
+const confirmOwner = (store, user) => {
+  if (!store.author.equals(user._id)) {
+    throw Error('You must own a store to be able to edit it')
+  }
+}
+
 exports.editStore = async (req, res) => {
   const store = await Store.findOne({ _id: req.params.storeId })
+  confirmOwner(store, req.user) // might throw
   res.render('editStore', { title: 'Edit Store', store })
 }
 
@@ -65,7 +74,9 @@ exports.resize = async (req, res, next) => {
 }
 
 exports.getStoreBySlug = async (req, res, next) => {
-  const store = await Store.findOne({ slug: req.params.slug })
+  const store = await Store.findOne({ slug: req.params.slug }).populate(
+    'author'
+  )
   if (!store) {
     next()
     return
@@ -84,4 +95,26 @@ exports.getStoresByTag = async function(req, res) {
     storesWithCurrentTagPromise
   ])
   res.render('tags', { tags, title: 'Tags', currentTag, storesWithCurrentTag })
+}
+
+exports.searchStores = async (req, res) => {
+  const stores = await Store.find(
+    {
+      // use compound text indexes from mongoDB
+      $text: {
+        $search: req.query.q
+      }
+    },
+    // project a score key to result
+    {
+      score: { $meta: 'textScore' }
+    }
+  )
+    .sort({
+      // sort base on the projected score field
+      score: { $meta: 'textScore' }
+    })
+    .limit(5)
+
+  res.json(stores)
 }

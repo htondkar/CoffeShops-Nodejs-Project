@@ -13,7 +13,9 @@ const UserSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Invalid Email Address'],
     required: 'Please enter an email'
   },
-  name: { type: String, required: 'Please enter your name', trim: true }
+  name: { type: String, required: 'Please enter your name', trim: true },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 })
 
 UserSchema.virtual('gravatar').get(function() {

@@ -10,7 +10,8 @@ const {
   upload,
   resize,
   getStoreBySlug,
-  getStoresByTag
+  getStoresByTag,
+  searchStores
 } = require('../controllers/storeController')
 
 const {
@@ -25,7 +26,11 @@ const {
   logout,
   isLoggedIn,
   account,
-  updateAccount
+  updateAccount,
+  forgotPassword,
+  resetPassword,
+  validatePasswords, 
+  updatePassword
 } = require('../controllers/authController')
 
 const { catchErrors } = require('../handlers/errorHandlers')
@@ -65,5 +70,17 @@ router.post('/register', validateRegister, register, login)
 
 router.get('/account', isLoggedIn, account)
 router.post('/account', catchErrors(updateAccount))
+
+router.post('/account/forgot', catchErrors(forgotPassword))
+router.get('/account/reset/:resetToken', catchErrors(resetPassword))
+router.post(
+  '/account/reset/:resetToken',
+  validatePasswords,
+  catchErrors(updatePassword)
+)
+
+
+// API
+router.get('/api/search', catchErrors(searchStores)) 
 
 module.exports = router
