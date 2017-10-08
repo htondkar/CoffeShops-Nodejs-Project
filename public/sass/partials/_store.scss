@@ -14,10 +14,11 @@
   }
   &__details {
     padding: 2rem;
+    text-align: justify;
     p {
       line-height: 1.2;
       margin-bottom: 0;
-      word-break: break-all;
+      word-break: normal;
     }
   }
   @media all and (max-width: 850px) {

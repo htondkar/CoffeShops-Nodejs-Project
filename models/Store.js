@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const slug = require('slugs')
+const dompurify = require('dompurify')
 
 mongoose.Promise = global.Promise
 
@@ -58,6 +59,12 @@ storeSchema.pre('save', async function(next) {
     next()
     return
   }
+})
+
+// to prevent XSS
+storeSchema.pre('save', function() {
+  this.name = dompurify(this.name)
+  this.description = dompurify(this.description)
 })
 
 storeSchema.statics.getTagsList = function() {

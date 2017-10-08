@@ -730,11 +730,12 @@ label {
   .store--wide {
     width: 100%; }
   .store__details {
-    padding: 2rem; }
+    padding: 2rem;
+    text-align: justify; }
     .store__details p {
       line-height: 1.2;
       margin-bottom: 0;
-      word-break: break-all; }
+      word-break: normal; }
   @media all and (max-width: 850px) {
     .store {
       width: 48%; } }
