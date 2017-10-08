@@ -2671,12 +2671,115 @@ var _typeAhead = __webpack_require__(10);
 
 var _typeAhead2 = _interopRequireDefault(_typeAhead);
 
+var _map = __webpack_require__(38);
+
+var _map2 = _interopRequireDefault(_map);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// enable google search 
+// enable google search
 (0, _autoCompleteSearch2.default)((0, _bling.$)('#address'), (0, _bling.$)('#lat'), (0, _bling.$)('#lng'));
-// enable search 
+// enable search
 (0, _typeAhead2.default)((0, _bling.$)('.search'));
+// /map page
+(0, _map2.default)((0, _bling.$)('#map'));
+
+/***/ }),
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _axios = __webpack_require__(12);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _bling = __webpack_require__(9);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapOptions = {
+  center: {
+    lat: 43.2,
+    lng: -79.8
+  },
+  zoom: 13
+};
+
+function loadPlaces(map) {
+  var lat = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 43.2;
+  var lng = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -79.8;
+
+  _axios2.default.get('/api/stores/near?lat=' + lat + '&lng=' + lng).then(function (res) {
+    var places = res.data;
+    if (!places.length) {
+      alert('no place was found');
+    } else {
+      var bounds = new google.maps.LatLngBounds();
+      var infoWindow = new google.maps.InfoWindow();
+
+      var markers = places.map(function (place) {
+        var _place$location$coord = _slicedToArray(place.location.coordinates, 2),
+            lng = _place$location$coord[0],
+            lat = _place$location$coord[1];
+
+        var position = { lat: lat, lng: lng };
+        bounds.extend(position);
+        var marker = new google.maps.Marker({
+          map: map,
+          position: position
+        });
+        marker.place = place;
+        return marker;
+      });
+      // add infoWindow to markers
+      markers.forEach(function (marker) {
+        return marker.addListener('click', function () {
+          console.log(this.place);
+          var HTML = '\n            <div> \n              <a href="/stores/' + this.place.slug + ' target="_blank">\n                <div> ' + this.place.name + ' - ' + this.place.location.address + '</div>\n                <img src="/uploads/' + (this.place.photo || 'store.png') + '" />\n              </a>\n            </div>';
+          infoWindow.setContent(HTML);
+          infoWindow.open(map, this);
+        });
+      });
+
+      // center map
+      map.setCenter(bounds.getCenter());
+      map.fitBounds(bounds);
+    }
+  });
+}
+
+function makeMap(containerEl) {
+  if (!containerEl) return;
+  var map = new google.maps.Map(containerEl, mapOptions);
+  loadPlaces(map);
+
+  var input = (0, _bling.$)('[name="geolocate"]');
+  var autoComplete = new google.maps.places.Autocomplete(input);
+  autoComplete.addListener('place_changed', function () {
+    var _autoComplete$getPlac = autoComplete.getPlace(),
+        _autoComplete$getPlac2 = _autoComplete$getPlac.geometry.location,
+        lat = _autoComplete$getPlac2.lat,
+        lng = _autoComplete$getPlac2.lng;
+
+    loadPlaces(map, lat(), lng());
+  });
+}
+
+exports.default = makeMap;
 
 /***/ })
 /******/ ]);

@@ -42,6 +42,13 @@ storeSchema.index({
   description: 'text'
 })
 
+// define indexes
+storeSchema.index({
+  location: {
+    coordinates: '2dsphere'
+  }
+})
+
 storeSchema.pre('save', async function(next) {
   // add slug to store only if the name is new
   if (this.isModified('name')) {
