@@ -4,6 +4,7 @@ const jimp = require('jimp')
 const uuid = require('uuid')
 
 const Store = mongoose.model('Store')
+const User = mongoose.model('User')
 
 const multerOptions = {
   storage: multer.memoryStorage(),
@@ -124,7 +125,7 @@ exports.mapStores = async (req, res) => {
   const query = {
     location: {
       $near: {
-        $geometry: { 
+        $geometry: {
           type: 'Point',
           coordinates
         },
@@ -142,4 +143,19 @@ exports.mapStores = async (req, res) => {
 
 exports.mapPage = async (req, res) => {
   res.render('map', { title: 'Map' })
+}
+
+exports.heartStore = async (req, res) => {
+  const user = req.user
+  const hearts = user.hearts.map(object => object.toString())
+  const operator = hearts.includes(req.params.id) ? '$pull' : '$addToSet'
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: user.id },
+    {
+      [operator]: { hearts: req.params.id }
+    },
+    { new: true }
+  )
+
+  res.json(updatedUser)
 }

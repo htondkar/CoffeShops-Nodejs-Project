@@ -13,7 +13,8 @@ const {
   getStoresByTag,
   searchStores,
   mapStores,
-  mapPage
+  mapPage,
+  heartStore
 } = require('../controllers/storeController')
 
 const {
@@ -82,11 +83,12 @@ router.post(
   catchErrors(updatePassword)
 )
 
+router.get('/map', mapPage)
+
 // API
 router.get('/api/search', catchErrors(searchStores))
 router.get('/api/stores/near', catchErrors(mapStores))
 
-
-router.get('/map', mapPage)
+router.post('/api/hearts/:id', heartStore)
 
 module.exports = router

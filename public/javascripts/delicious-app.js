@@ -4,6 +4,7 @@ import { $, $$ } from './modules/bling'
 import autoCompleteSearch from './modules/autoCompleteSearch'
 import typeAhead from './modules/typeAhead'
 import makeMap from './modules/map'
+import ajaxHeart from './modules/heart'
 
 // enable google search
 autoCompleteSearch($('#address'), $('#lat'), $('#lng'))
@@ -11,3 +12,5 @@ autoCompleteSearch($('#address'), $('#lat'), $('#lng'))
 typeAhead($('.search'))
 // /map page
 makeMap($('#map'))
+
+$$('form.heart').on('submit', ajaxHeart)
