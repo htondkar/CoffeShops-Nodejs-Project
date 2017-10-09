@@ -22,7 +22,8 @@ const {
   createUser,
   registerForm,
   validateRegister,
-  register
+  register,
+  heartedPage
 } = require('../controllers/userController')
 
 const {
@@ -82,6 +83,8 @@ router.post(
   validatePasswords,
   catchErrors(updatePassword)
 )
+
+router.get('/hearts', catchErrors(heartedPage))
 
 router.get('/map', mapPage)
 

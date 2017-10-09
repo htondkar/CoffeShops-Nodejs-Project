@@ -53,3 +53,18 @@ exports.validateRegister = (req, res, next) => {
     next()
   }
 }
+
+exports.heartedPage = async (req, res) => {
+  const user = req.user
+  if (!user) {
+    res.redirect('/')
+    return
+  }
+  const userWithHeartedStores = await User.findOne({ _id: user._id }).populate(
+    'hearts'
+  )
+  res.render('heartedPage', {
+    title: 'Hearted Stores',
+    stores: userWithHeartedStores.hearts
+  })
+}

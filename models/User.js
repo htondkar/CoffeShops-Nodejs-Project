@@ -29,4 +29,5 @@ UserSchema.plugin(passportLocalMongoose, { usernameField: 'email' })
 // show pretty errors
 UserSchema.plugin(mongoDbErrorHandler)
 
+
 module.exports = mongoose.model('User', UserSchema)
