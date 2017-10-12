@@ -88,10 +88,47 @@ storeSchema.statics.getTagsList = function() {
   ])
 }
 
+// this method is specific to mongoose
+// cant be used with aggregation
 storeSchema.virtual('reviews', {
   localField: '_id', // id of this store
   foreignField: 'store', // should match the store property
   ref: 'Review' // of the Review model
 })
+
+storeSchema.statics.getTopStores = function() {
+  return this.aggregate([
+    {
+      $lookup: {
+        from: 'reviews', // "Review" => "reviews" this is done by mongoDB!
+        localField: '_id',
+        foreignField: 'store',
+        as: 'reviews' // what to call reviews in the results
+      }
+    },
+    {
+      $match: {
+        'reviews.1': { $exists: true } // review.1 accessing the second item in reviews
+      }
+    },
+    {
+      $project: {
+        photo: '$$ROOT.photo',
+        name: '$$ROOT.name',
+        reviews: '$$ROOT.reviews',
+        slug: '$$ROOT.slug',
+        averageRating: { $avg: '$reviews.rating' }
+      }
+    },
+    {
+      $sort: {
+        averageRating: -1
+      }
+    },
+    {
+      $limit: 10
+    }
+  ])
+}
 
 module.exports = mongoose.model('Store', storeSchema)

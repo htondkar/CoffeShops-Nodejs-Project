@@ -18,7 +18,7 @@ const multerOptions = {
 }
 
 exports.getStores = async (req, res) => {
-  const stores = await Store.find() // all of them
+  const stores = await Store.find().populate('reviews') // all of them
   res.render('stores', { title: 'Stores', stores })
 }
 
@@ -160,3 +160,7 @@ exports.heartStore = async (req, res) => {
   res.json(updatedUser)
 }
 
+exports.getTopStores = async (req, res) => {
+  const stores = await Store.getTopStores()
+  res.render('topStores', { stores, title: 'Top Stores' })
+}

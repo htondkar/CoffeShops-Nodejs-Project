@@ -14,7 +14,8 @@ const {
   searchStores,
   mapStores,
   mapPage,
-  heartStore
+  heartStore,
+  getTopStores
 } = require('../controllers/storeController')
 
 const {
@@ -93,6 +94,8 @@ router.get('/hearts', catchErrors(heartedPage))
 router.get('/map', mapPage)
 
 router.post('/reviews/:storeId', isLoggedIn, catchErrors(addReview))
+
+router.get('/top', catchErrors(getTopStores))
 
 // API
 router.get('/api/search', catchErrors(searchStores))
