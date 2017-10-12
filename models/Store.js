@@ -4,37 +4,43 @@ const dompurify = require('dompurify')
 
 mongoose.Promise = global.Promise
 
-const storeSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-    required: 'You must specify a name'
-  },
-  slug: String,
-  description: { type: String, trim: 'true' },
-  tags: [String],
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  location: {
-    type: {
+const storeSchema = new mongoose.Schema(
+  {
+    name: {
       type: String,
-      default: 'Point'
+      trim: true,
+      required: 'You must specify a name'
     },
-    coordinates: [Number],
-    address: {
-      type: String,
-      required: 'you must provide an address'
+    slug: String,
+    description: { type: String, trim: 'true' },
+    tags: [String],
+    created: {
+      type: Date,
+      default: Date.now
+    },
+    location: {
+      type: {
+        type: String,
+        default: 'Point'
+      },
+      coordinates: [Number],
+      address: {
+        type: String,
+        required: 'you must provide an address'
+      }
+    },
+    photo: String,
+    author: {
+      type: mongoose.Schema.ObjectId, // PascalCase
+      ref: 'User',
+      required: 'You must supply an author'
     }
   },
-  photo: String,
-  author: {
-    type: mongoose.Schema.ObjectId, // PascalCase
-    ref: 'User',
-    required: 'You must supply an author'
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
-})
+)
 
 // define indexes
 storeSchema.index({
@@ -81,5 +87,11 @@ storeSchema.statics.getTagsList = function() {
     { $sort: { count: -1 } }
   ])
 }
+
+storeSchema.virtual('reviews', {
+  localField: '_id', // id of this store
+  foreignField: 'store', // should match the store property
+  ref: 'Review' // of the Review model
+})
 
 module.exports = mongoose.model('Store', storeSchema)

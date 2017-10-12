@@ -38,6 +38,10 @@ const {
   updatePassword
 } = require('../controllers/authController')
 
+const {
+  addReview
+} = require('../controllers/reviewController')
+
 const { catchErrors } = require('../handlers/errorHandlers')
 
 router.get('/', catchErrors(getStores))
@@ -88,10 +92,13 @@ router.get('/hearts', catchErrors(heartedPage))
 
 router.get('/map', mapPage)
 
+router.post('/reviews/:storeId', isLoggedIn, catchErrors(addReview))
+
 // API
 router.get('/api/search', catchErrors(searchStores))
 router.get('/api/stores/near', catchErrors(mapStores))
 
 router.post('/api/hearts/:id', heartStore)
+
 
 module.exports = router
