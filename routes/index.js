@@ -15,7 +15,8 @@ const {
   mapStores,
   mapPage,
   heartStore,
-  getTopStores
+  getTopStores,
+  allStores
 } = require('../controllers/storeController')
 
 const {
@@ -47,7 +48,9 @@ const { catchErrors } = require('../handlers/errorHandlers')
 
 router.get('/', catchErrors(getStores))
 
-router.get('/stores', catchErrors(getStores))
+router.get('/stores', catchErrors(allStores))
+
+router.get('/stores/:page', catchErrors(getStores))
 
 router.get('/add', isLoggedIn, addStore)
 

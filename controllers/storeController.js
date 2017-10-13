@@ -18,8 +18,33 @@ const multerOptions = {
 }
 
 exports.getStores = async (req, res) => {
-  const stores = await Store.find().populate('reviews') // all of them
-  res.render('stores', { title: 'Stores', stores })
+  const page = req.params.page || 1
+  const limit = 4
+  const skip = (page - 1) * limit
+
+  const storesPromise = Store.find()
+    .populate('reviews')
+    .skip(skip)
+    .limit(limit)
+    .sort({ created: 'desc' })
+
+  const countPromise = Store.count()
+
+  const [stores, count] = await Promise.all([storesPromise, countPromise])
+
+  const pages = Math.ceil(count / 4)
+
+  // if someone requested a page that had no stores, redirect them to the last page
+  if (stores.length === 0 && skip) {
+    res.redirect(`/stores/${pages}`)
+    return
+  }
+
+  res.render('stores', { title: 'Stores', stores, page, count, pages })
+}
+
+exports.allStores = (req, res) => {
+  res.redirect('/stores/1')
 }
 
 exports.addStore = (req, res) => {
